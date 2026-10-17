@@ -6,9 +6,9 @@ Roles
     admin                  manages the training dataset, users and contact messages and sees
                            system-wide activity and the state of the prediction model
 
-Configuration (all optional, defaults suit a local XAMPP install):
-    DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD
-    ADMIN_USER, ADMIN_PASSWORD   built-in admin login (default admin / admin)
+Configuration, read from Backend_Flask/.env (copy .env.example) or the environment:
+    DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD   (defaults suit a local XAMPP install)
+    ADMIN_USER, ADMIN_PASSWORD   built-in admin login (no default: admin login is off if unset)
     SECRET_KEY                   signs login tokens (random per start if unset)
     CORS_ORIGINS                 comma separated list (default: Angular dev server)
     PORT                         port to listen on (default 5000)
@@ -22,6 +22,7 @@ import re
 import secrets
 import threading
 from contextlib import contextmanager
+from pathlib import Path
 from datetime import datetime, timedelta
 from functools import wraps
 from hmac import compare_digest
@@ -42,8 +43,18 @@ from sklearn.svm import SVC
 from werkzeug.exceptions import HTTPException
 from werkzeug.security import check_password_hash, generate_password_hash
 
+try:  # settings and secrets live in Backend_Flask/.env (see .env.example)
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).with_name(".env"))
+except ImportError:
+    _dotenv_missing = True
+else:
+    _dotenv_missing = False
+
 log = logging.getLogger("heart-api")
 logging.basicConfig(level=logging.INFO)
+if _dotenv_missing:
+    log.warning("python-dotenv is not installed - .env is NOT loaded (pip install python-dotenv)")
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # CSV uploads up to 5 MB
@@ -59,8 +70,10 @@ DB_CONFIG = dict(
     user=os.environ.get("DB_USER", "root"),
     password=os.environ.get("DB_PASSWORD", ""),
 )
-ADMIN_USER = os.environ.get("ADMIN_USER", "admin")
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin")
+ADMIN_USER = os.environ.get("ADMIN_USER", "")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
+if not (ADMIN_USER and ADMIN_PASSWORD):
+    log.warning("ADMIN_USER / ADMIN_PASSWORD are not set in .env - the built-in admin login is disabled")
 
 FEATURES = ["age", "sex", "cp", "trtbps", "chol", "fbs", "restecg",
             "thalachh", "exng", "oldpeak", "slp", "caa", "thall"]
@@ -306,7 +319,7 @@ def logdata():
     if not email or not isinstance(pwd, str) or not pwd:
         return err("Email and password are required", 400)
 
-    if compare_digest(email, ADMIN_USER) and compare_digest(pwd, ADMIN_PASSWORD):
+    if ADMIN_USER and ADMIN_PASSWORD and compare_digest(email, ADMIN_USER) and compare_digest(pwd, ADMIN_PASSWORD):
         return jsonify({"role": "admin", "name": "Administrator", "token": issue_token(ADMIN_USER, "admin")})
 
     with db() as cur:

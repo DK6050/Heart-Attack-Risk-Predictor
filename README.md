@@ -33,7 +33,8 @@ This creates the `dsdb` database with its tables. If you already have an older `
 
 ```bash
 cd Backend_Flask
-pip install flask flask-cors mysql-connector-python numpy pandas scikit-learn
+pip install -r requirements.txt
+cp .env.example .env   # Windows: copy .env.example .env  - then edit the values
 python app.py          # or double-click runner.bat on Windows
 ```
 
@@ -53,14 +54,14 @@ Log in as admin, open **Dataloader** and upload `Backend_Flask/static/Upload/hea
 
 ## Configuration
 
-All backend settings are optional environment variables. The defaults suit a local XAMPP install.
+Backend settings and secrets live in `Backend_Flask/.env`, which is git-ignored. Copy `Backend_Flask/.env.example` and fill in your values. Real environment variables also work and take precedence. The database defaults suit a local XAMPP install.
 
 | Variable | Default | Purpose |
 |---|---|---|
 | `DB_HOST`, `DB_PORT` | `localhost`, `3306` | MySQL server |
 | `DB_NAME` | `dsdb` | Database name |
 | `DB_USER`, `DB_PASSWORD` | `root`, empty | MySQL login |
-| `ADMIN_USER`, `ADMIN_PASSWORD` | `admin`, `admin` | Built-in admin login. **Change this before deploying.** |
+| `ADMIN_USER`, `ADMIN_PASSWORD` | none | Built-in admin login. If unset, the admin login is disabled. Use a strong password. |
 | `SECRET_KEY` | random per start | Signs login tokens. Set it so logins survive restarts. |
 | `CORS_ORIGINS` | `http://localhost:4200,http://127.0.0.1:4200` | Allowed front-end origins |
 | `PORT` | `5000` | API port |
@@ -106,5 +107,4 @@ The CSV needs these 14 columns: `age, sex, cp, trtbps, chol, fbs, restecg, thala
 
 ## Notes
 
-- The Flask app has no `requirements.txt`. The `pip install` line above lists everything it imports.
-- For anything beyond local use, set `ADMIN_PASSWORD` and `SECRET_KEY`.
+- Never commit `.env`. For anything beyond local use, set a strong `ADMIN_PASSWORD` and your own `SECRET_KEY`.
