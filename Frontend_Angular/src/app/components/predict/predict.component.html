@@ -1,0 +1,118 @@
+<app-site-header variant="user"></app-site-header>
+
+<ng-template #fieldTpl let-f>
+    <div class="field" [class.has-error]="message(f)">
+        <label [for]="f.id">{{ f.label }}</label>
+        <span class="field-hint">{{ f.hint }}</span>
+
+        <input *ngIf="f.kind === 'number'" type="text" class="input" [id]="f.id" [name]="f.id"
+               [attr.inputmode]="f.decimals ? 'decimal' : 'numeric'" autocomplete="off"
+               [placeholder]="f.placeholder ?? ''" [value]="valueOf(f)"
+               [attr.aria-invalid]="message(f) ? 'true' : null" [attr.aria-describedby]="f.id + '-msg'"
+               (input)="onInput(f, $event)" (blur)="onBlur(f)" (keydown.enter)="predictData()">
+
+        <select *ngIf="f.kind === 'select'" class="input" [id]="f.id" [name]="f.id"
+                [attr.aria-invalid]="message(f) ? 'true' : null" [attr.aria-describedby]="f.id + '-msg'"
+                (change)="onSelect(f, $event)" (blur)="onBlur(f)">
+            <option value="" disabled hidden [selected]="!values[f.id]">Select an option</option>
+            <option *ngFor="let o of f.options" [value]="o.value" [selected]="values[f.id] === o.value">{{ o.label }}</option>
+        </select>
+
+        <span class="field-error" [id]="f.id + '-msg'" role="alert" *ngIf="message(f)">{{ message(f) }}</span>
+    </div>
+</ng-template>
+
+<main class="page page-wide">
+    <div class="page-head page-head-row">
+        <div>
+            <span class="eyebrow"><i class="bi bi-heart-pulse"></i> New assessment</span>
+            <h1 class="page-title">Check your heart attack risk</h1>
+            <p class="page-sub">Enter your own measurements from a recent check-up or lab report. Every field is validated as you type, and the result is saved to your private history.</p>
+        </div>
+        <button type="button" class="btn btn-ghost" *ngIf="last" (click)="useLast()"
+                [attr.title]="'Fill the form with the values from ' + (last.createdAt | date:'d MMM y')">
+            <i class="bi bi-clock-history"></i> Use my last values
+        </button>
+    </div>
+
+    <div class="predict-layout">
+        <!-- ===== form ===== -->
+        <div class="form-col">
+            <section class="card group" *ngFor="let g of groups">
+                <h2 class="card-title"><span class="g-icon"><i class="bi" [ngClass]="g.icon"></i></span> {{ g.title }}</h2>
+                <p class="card-sub">{{ g.sub }}</p>
+                <div class="predict-grid">
+                    <ng-container *ngFor="let f of g.fields">
+                        <ng-container *ngTemplateOutlet="fieldTpl; context: { $implicit: f }"></ng-container>
+                    </ng-container>
+                </div>
+            </section>
+
+            <div class="alert alert-danger" role="alert" *ngIf="formError" style="margin-bottom:16px;">
+                <i class="bi bi-exclamation-triangle-fill"></i> {{ formError }}
+            </div>
+
+            <div class="btn-row actions">
+                <button type="button" class="btn btn-primary btn-lg" id="btn_predictdata" name="btn_predictdata" (click)="predictData()" [disabled]="busy">
+                    <i class="bi bi-activity"></i> Predict risk
+                </button>
+                <button type="button" class="btn btn-ghost btn-lg" id="btn_reset_predict" name="btn_reset_predict" (click)="resetData()">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== result ===== -->
+        <aside class="result-col">
+            <div class="card result" id="result" [ngClass]="result ? 'level-' + level : 'empty'" aria-live="polite">
+                <ng-container *ngIf="!result">
+                    <div class="placeholder-icon"><i class="bi bi-heart-pulse"></i></div>
+                    <h2>Your result will appear here</h2>
+                    <p class="text-muted">Complete the form and press <strong>Predict risk</strong> to see your estimated risk and what influenced it.</p>
+                </ng-container>
+
+                <ng-container *ngIf="result">
+                    <p class="result-kicker">Estimated risk</p>
+                    <app-risk-gauge [percent]="result.riskPercent"></app-risk-gauge>
+
+                    <h2 class="verdict">
+                        <i class="bi" [ngClass]="result.prediction === 1 ? 'bi-exclamation-octagon-fill' : 'bi-shield-check'"></i>
+                        {{ result.prediction === 1 ? 'Prone to heart attack' : 'Not prone to heart attack' }}
+                    </h2>
+
+                    <p class="saved" *ngIf="result.saved">
+                        <i class="bi bi-check-circle-fill"></i> Saved to your history &middot; <a routerLink="/history">view</a>
+                    </p>
+
+                    <div class="block" *ngIf="factorRows.length">
+                        <h3>What influenced this result</h3>
+                        <ul class="factors">
+                            <li *ngFor="let f of factorRows; trackBy: trackIndex">
+                                <div class="f-head"><span>{{ f.label }} <small>{{ f.value }}</small></span>
+                                    <span class="f-dir" [class.up]="f.raises">{{ f.raises ? 'Raises risk' : 'Lowers risk' }}</span></div>
+                                <div class="f-bar"><span [class.up]="f.raises" [style.width.%]="f.width"></span></div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="block">
+                        <h3>Suggestions</h3>
+                        <ul class="advice">
+                            <li *ngFor="let a of advice; trackBy: trackIndex" [ngClass]="'tone-' + a.tone"><i class="bi" [ngClass]="a.icon"></i><span>{{ a.text }}</span></li>
+                        </ul>
+                    </div>
+
+                    <dl class="meta">
+                        <div><dt>Model</dt><dd>{{ result.model }}</dd></div>
+                        <div><dt>Accuracy</dt><dd>{{ result.accuracy }}%</dd></div>
+                        <div><dt>Trained on</dt><dd>{{ result.trainedOn }} records</dd></div>
+                    </dl>
+
+                    <p class="disclaimer"><i class="bi bi-info-circle"></i> This is a screening aid based on a small dataset, not a medical diagnosis. Please consult a doctor.</p>
+                </ng-container>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<app-site-footer></app-site-footer>

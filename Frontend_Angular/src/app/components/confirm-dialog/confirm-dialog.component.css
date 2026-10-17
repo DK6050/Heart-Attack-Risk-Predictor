@@ -1,0 +1,39 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(6, 20, 43, 0.55);
+  backdrop-filter: blur(3px);
+  animation: fade 0.15s ease-out;
+}
+.dialog {
+  width: min(420px, 100%);
+  padding: 28px 26px 22px;
+  border-radius: 20px;
+  background: #fff;
+  text-align: center;
+  box-shadow: 0 30px 60px -20px rgba(6, 20, 43, 0.6);
+  animation: pop 0.2s ease-out;
+}
+.icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #2563eb;
+  font-size: 26px;
+}
+.icon.danger { background: #fee2e2; color: #dc2626; }
+h3 { margin: 0 0 8px; font-size: 20px; }
+p { margin: 0 0 22px; color: #64748b; font-size: 15px; }
+.actions { display: flex; gap: 10px; }
+.actions .btn { flex: 1; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.94) translateY(8px); } to { opacity: 1; transform: none; } }

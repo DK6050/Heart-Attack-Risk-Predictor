@@ -1,0 +1,38 @@
+<app-site-header variant="admin"></app-site-header>
+
+<main class="page page-narrow">
+    <div class="page-head page-head-row">
+        <div>
+            <span class="eyebrow"><i class="bi bi-shield-lock"></i> Administrator</span>
+            <h1 class="page-title">Messages</h1>
+            <p class="page-sub">Messages sent through the Contact page.</p>
+        </div>
+        <span class="badge badge-info count"><i class="bi bi-chat-dots-fill"></i> {{ rows.length }} message{{ rows.length === 1 ? '' : 's' }}</span>
+    </div>
+
+    <section class="card empty-state" *ngIf="loaded && rows.length === 0">
+        <div class="empty-icon"><i class="bi bi-inbox"></i></div>
+        <h2>Inbox is empty</h2>
+        <p>New messages from visitors will appear here.</p>
+    </section>
+
+    <div class="list">
+        <article class="card msg" *ngFor="let m of rows">
+            <div class="msg-head">
+                <span class="avatar" aria-hidden="true">{{ initials(m) }}</span>
+                <div class="who">
+                    <strong>{{ m.name }}</strong>
+                    <span><a [href]="'mailto:' + m.email">{{ m.email }}</a><span *ngIf="m.phone"> &middot; {{ m.phone }}</span></span>
+                </div>
+                <time class="when" [attr.datetime]="m.createdAt">{{ m.createdAt | date:'d MMM y, h:mm a' }}</time>
+            </div>
+            <p class="msg-body">{{ m.message }}</p>
+            <div class="msg-actions">
+                <a [href]="replyLink(m)" class="btn btn-ghost btn-sm"><i class="bi bi-reply"></i> Reply by email</a>
+                <button type="button" class="btn btn-ghost btn-sm del" (click)="remove(m)"><i class="bi bi-trash3"></i> Delete</button>
+            </div>
+        </article>
+    </div>
+</main>
+
+<app-site-footer></app-site-footer>

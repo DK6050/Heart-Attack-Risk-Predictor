@@ -1,0 +1,7 @@
+.legend { display: flex; gap: 8px; }
+.id { color: var(--muted); }
+.actions-col { text-align: center; width: 70px; }
+.del { color: var(--red-600); }
+.del:hover { background: var(--red-50); border-color: #fecaca; color: var(--red-600); }
+.pager-buttons { align-items: center; }
+.page-no { min-width: 92px; text-align: center; font-weight: 600; color: var(--text-2); }

@@ -1,0 +1,7 @@
+<div class="stack" aria-live="polite">
+  <div class="toast" *ngFor="let t of toasts.toasts$ | async" [ngClass]="t.kind" [attr.role]="t.kind === 'error' ? 'alert' : 'status'">
+    <i class="bi icon" [ngClass]="icons[t.kind]"></i>
+    <span class="text">{{ t.text }}</span>
+    <button type="button" class="close" aria-label="Dismiss notification" (click)="toasts.dismiss(t.id)"><i class="bi bi-x-lg"></i></button>
+  </div>
+</div>

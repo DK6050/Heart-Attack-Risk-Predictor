@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Angular build output and cache
+Frontend_Angular/dist/
+Frontend_Angular/.angular/
+Frontend_Angular/out-tsc/
+Frontend_Angular/coverage/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Secrets / local config
+.env
+*.env
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

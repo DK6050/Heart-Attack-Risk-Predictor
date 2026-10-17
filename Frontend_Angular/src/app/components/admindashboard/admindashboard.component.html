@@ -1,0 +1,71 @@
+<app-site-header variant="admin"></app-site-header>
+
+<main class="page page-wide">
+    <div class="page-head page-head-row">
+        <div>
+            <span class="eyebrow"><i class="bi bi-shield-lock"></i> Administrator</span>
+            <h1 class="page-title">Overview</h1>
+            <p class="as-of" *ngIf="stats">
+                <span><i class="bi bi-calendar3"></i> As of <strong>{{ stats.asOf | date:'EEEE, d MMMM y' }}</strong> ({{ stats.asOf | date:'h:mm a' }})</span>
+                <span class="live"><i class="bi bi-broadcast"></i> Live figures from the database</span>
+            </p>
+        </div>
+        <button type="button" class="btn btn-ghost" (click)="load()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+    </div>
+
+    <div class="stat-grid" *ngIf="stats">
+        <div class="stat" *ngFor="let t of tiles">
+            <span class="stat-icon" [ngClass]="t.tone"><i class="bi" [ngClass]="t.icon"></i></span>
+            <span class="stat-body">
+                <span class="stat-value">{{ t.value }}</span>
+                <span class="stat-label">{{ t.label }}<span *ngIf="t.share"> &middot; <span class="stat-share">{{ t.share }}</span></span></span>
+            </span>
+        </div>
+    </div>
+
+    <!-- state of the prediction model -->
+    <section class="card model" *ngIf="stats">
+        <div class="model-head">
+            <h2 class="card-title"><i class="bi bi-cpu"></i> Prediction model</h2>
+            <a routerLink="/dataloader" class="btn btn-ghost btn-sm">Manage training data <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <ng-container *ngIf="stats.model as m; else noModel">
+            <dl class="model-grid">
+                <div><dt>Algorithm</dt><dd>{{ m.name }}</dd></div>
+                <div><dt>Accuracy (cross-validated)</dt><dd>{{ m.accuracy }}%</dd></div>
+                <div><dt>Trained on</dt><dd>{{ m.trainedOn }} records</dd></div>
+                <div><dt>Last trained</dt><dd>{{ m.trainedAt | date:'d MMM y, h:mm a' }}</dd></div>
+            </dl>
+            <p class="model-note">The model retrains automatically whenever the training data changes, and every patient's prediction uses the latest version.</p>
+        </ng-container>
+        <ng-template #noModel>
+            <div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill"></i>
+                No model yet &mdash; patients cannot get predictions until a training dataset is loaded.</div>
+        </ng-template>
+    </section>
+
+    <div class="charts">
+        <section class="card chart-card">
+            <h2 class="card-title"><i class="bi bi-bar-chart"></i> Assessments, last 14 days</h2>
+            <p class="card-sub">How many risk assessments patients ran each day</p>
+            <div class="chart-canvas"><canvas id="chart1"></canvas></div>
+        </section>
+        <section class="card chart-card">
+            <h2 class="card-title"><i class="bi bi-pie-chart"></i> Results by risk level</h2>
+            <p class="card-sub">All assessments: low below 20%, moderate 20 &ndash; 49%, high 50% and above</p>
+            <div class="chart-canvas"><canvas id="chart2"></canvas></div>
+        </section>
+        <section class="card chart-card">
+            <h2 class="card-title"><i class="bi bi-people"></i> Patients by gender</h2>
+            <p class="card-sub">Registered patient accounts</p>
+            <div class="chart-canvas"><canvas id="chart3"></canvas></div>
+        </section>
+        <section class="card chart-card">
+            <h2 class="card-title"><i class="bi bi-database"></i> Training data balance</h2>
+            <p class="card-sub">Outcome split of the records the model learns from</p>
+            <div class="chart-canvas"><canvas id="chart4"></canvas></div>
+        </section>
+    </div>
+</main>
+
+<app-site-footer></app-site-footer>

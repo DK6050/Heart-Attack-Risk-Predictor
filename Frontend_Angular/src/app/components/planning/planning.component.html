@@ -1,0 +1,67 @@
+<app-site-header variant="admin"></app-site-header>
+
+<main class="page page-wide">
+    <div class="page-head page-head-row">
+        <div>
+            <span class="eyebrow"><i class="bi bi-shield-lock"></i> Administrator</span>
+            <h1 class="page-title">Dataset records</h1>
+            <p class="page-sub">The training data the prediction model learns from. Changes here affect the predictions every patient receives.</p>
+        </div>
+        <div class="legend">
+            <span class="badge badge-danger"><i class="bi bi-heart-pulse-fill"></i> At risk</span>
+            <span class="badge badge-success"><i class="bi bi-shield-check"></i> No risk</span>
+        </div>
+    </div>
+
+    <div class="card table-card">
+        <div class="table-wrap">
+            <table class="data compact">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th *ngFor="let c of columns" [attr.title]="c.title">{{ c.label }}</th>
+                        <th>Result</th>
+                        <th class="actions-col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let r of rows">
+                        <td class="num id">{{ r.id }}</td>
+                        <td *ngFor="let c of columns" class="num">
+                            <span *ngIf="c.key === 'sex'" class="badge" [ngClass]="r['sex'] == 1 ? 'badge-info' : 'badge-violet'">{{ r['sex'] == 1 ? 'Male' : 'Female' }}</span>
+                            <ng-container *ngIf="c.key !== 'sex'">{{ r[c.key] }}</ng-container>
+                        </td>
+                        <td>
+                            <span class="badge" [ngClass]="atRisk(r) ? 'badge-danger' : 'badge-success'">
+                                <i class="bi" [ngClass]="atRisk(r) ? 'bi-heart-pulse-fill' : 'bi-shield-check'"></i>
+                                {{ atRisk(r) ? 'At risk' : 'No risk' }}
+                            </span>
+                        </td>
+                        <td class="actions-col">
+                            <button type="button" class="btn btn-ghost btn-icon del" title="Delete record" aria-label="Delete record" (click)="remove(r)">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="rows.length === 0">
+                        <td [attr.colspan]="columns.length + 3" class="table-empty">
+                            <i class="bi bi-inbox" style="font-size:28px;display:block;margin-bottom:6px;"></i>
+                            No training data yet. Load a CSV on the Training data page.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pager">
+            <span>Showing <strong>{{ from }}&ndash;{{ to }}</strong> of <strong>{{ total }}</strong> records</span>
+            <div class="pager-buttons">
+                <button type="button" class="btn btn-ghost btn-sm" [disabled]="page <= 1" (click)="load(page - 1)"><i class="bi bi-chevron-left"></i> Prev</button>
+                <span class="page-no">Page {{ page }} / {{ lastPage }}</span>
+                <button type="button" class="btn btn-ghost btn-sm" [disabled]="page >= lastPage" (click)="load(page + 1)">Next <i class="bi bi-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<app-site-footer></app-site-footer>

@@ -1,0 +1,92 @@
+<app-site-header variant="public"></app-site-header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-copy">
+            <span class="pill"><i class="bi bi-stars"></i> Machine-learning powered screening</span>
+            <h1>Understand your <span class="grad">heart attack risk</span> in seconds</h1>
+            <p class="lead">
+                Enter 13 routine clinical measurements and get an instant, data-driven risk estimate from a model
+                trained on real patient records.
+            </p>
+            <div class="cta-row">
+                <a routerLink="/register" class="btn btn-primary btn-lg">Get started <i class="bi bi-arrow-right"></i></a>
+                <a routerLink="/login" class="btn btn-outline-light btn-lg">Log in</a>
+            </div>
+            <ul class="trust">
+                <li><i class="bi bi-clipboard2-pulse"></i> 13 clinical inputs</li>
+                <li><i class="bi bi-lightning-charge"></i> Instant estimate</li>
+                <li><i class="bi bi-lock"></i> Secure sign-in</li>
+            </ul>
+        </div>
+        <div class="hero-art">
+            <img src="assets/art/hero-heart.svg" alt="Animated heart with a heartbeat line" />
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <span class="eyebrow"><i class="bi bi-grid"></i> Everything in one place</span>
+            <h2>From your own numbers to a clear next step</h2>
+            <p>Enter measurements from a recent check-up, understand your risk, and keep track of it over time.</p>
+        </div>
+
+        <div class="features">
+            <article class="card card-hover feature">
+                <div class="feature-icon tone-red"><i class="bi bi-heart-pulse-fill"></i></div>
+                <h3>Personal risk assessment</h3>
+                <p>Get an instant risk estimate with the measurements that influenced it explained in plain language, plus general suggestions.</p>
+            </article>
+            <article class="card card-hover feature">
+                <div class="feature-icon tone-blue"><i class="bi bi-graph-up-arrow"></i></div>
+                <h3>Your health history</h3>
+                <p>Every assessment is saved to your account, so you can follow trends over time, export your data or print a report for your doctor.</p>
+            </article>
+            <article class="card card-hover feature">
+                <div class="feature-icon tone-teal"><i class="bi bi-shield-lock-fill"></i></div>
+                <h3>Private and secure</h3>
+                <p>Your records are visible only to you. Passwords are stored hashed and every request is authenticated.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="section alt">
+    <div class="container">
+        <div class="section-head">
+            <span class="eyebrow"><i class="bi bi-signpost-split"></i> How it works</span>
+            <h2>Three simple steps</h2>
+        </div>
+        <ol class="steps">
+            <li class="step">
+                <span class="step-no">1</span>
+                <h3>Enter measurements</h3>
+                <p>Fill in age, blood pressure, cholesterol, heart rate and the other clinical values. Every field is validated as you type.</p>
+            </li>
+            <li class="step">
+                <span class="step-no">2</span>
+                <h3>The model analyses</h3>
+                <p>A machine-learning model trained on historical patient records evaluates how closely the profile matches known cases.</p>
+            </li>
+            <li class="step">
+                <span class="step-no">3</span>
+                <h3>Understand and track</h3>
+                <p>See your risk, what influenced it and general suggestions. Results are saved so you can watch how they change.</p>
+            </li>
+        </ol>
+    </div>
+</section>
+
+<section class="cta-band">
+    <div class="container cta-inner">
+        <div>
+            <h2>Ready to try it?</h2>
+            <p>Create an account to start predicting. This tool is a screening aid, not a medical diagnosis &mdash; always consult a doctor.</p>
+        </div>
+        <a routerLink="/register" class="btn btn-light btn-lg">Create an account <i class="bi bi-arrow-right"></i></a>
+    </div>
+</section>
+
+<app-site-footer></app-site-footer>

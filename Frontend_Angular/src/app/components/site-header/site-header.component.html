@@ -1,0 +1,24 @@
+<header class="site-header">
+  <a class="brand" [routerLink]="links[0].path" (click)="close()" aria-label="Heart Attack Predictor - home">
+    <img src="assets/brand/logo.svg" alt="" width="40" height="40" />
+    <span class="brand-text"><strong>Heart Attack</strong><small>Predictor</small></span>
+  </a>
+
+  <div class="right">
+    <nav [class.open]="open" aria-label="Main navigation">
+      <div class="who-mobile" *ngIf="name"><span class="avatar">{{ initials }}</span> Signed in as <strong>{{ name }}</strong></div>
+      <a *ngFor="let l of links" [routerLink]="l.path" routerLinkActive="active" [class.cta]="l.cta" (click)="close()"><i class="bi" [ngClass]="l.icon"></i>{{ l.label }}</a>
+    </nav>
+
+    <span class="user-chip" *ngIf="name" [attr.title]="'Signed in as ' + name">
+      <span class="avatar">{{ initials }}</span>
+      <span class="chip-name">{{ name }}</span>
+    </span>
+
+    <button type="button" class="menu-btn" aria-label="Toggle navigation"
+            [attr.aria-expanded]="open" (click)="toggle()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+<div class="backdrop" *ngIf="open" (click)="close()"></div>

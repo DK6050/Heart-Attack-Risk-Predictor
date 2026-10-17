@@ -1,0 +1,59 @@
+<app-site-header variant="admin"></app-site-header>
+
+<main class="page page-wide">
+    <div class="page-head page-head-row">
+        <div>
+            <span class="eyebrow"><i class="bi bi-shield-lock"></i> Administrator</span>
+            <h1 class="page-title">Users</h1>
+            <p class="page-sub">Registered patients. Deleting a user also deletes their private assessment history.</p>
+        </div>
+        <span class="badge badge-info count"><i class="bi bi-people-fill"></i> {{ users.length }} users</span>
+    </div>
+
+    <div class="card table-card">
+        <div class="table-wrap">
+            <table class="data">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Phone</th>
+                        <th>Gender</th>
+                        <th>Assessments</th>
+                        <th>Address</th>
+                        <th class="actions-col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let u of users">
+                        <td>
+                            <div class="user">
+                                <span class="avatar" aria-hidden="true">{{ initials(u) }}</span>
+                                <span class="user-text">
+                                    <strong>{{ u.uname }}</strong>
+                                    <small>{{ u.email }}</small>
+                                </span>
+                            </div>
+                        </td>
+                        <td class="num">{{ u.phone }}</td>
+                        <td><span class="badge" [ngClass]="genderClass(u.gender)">{{ u.gender }}</span></td>
+                        <td class="num">{{ u.assessments }}</td>
+                        <td class="addr" [attr.title]="u.addr">{{ u.addr || '—' }}</td>
+                        <td class="actions-col">
+                            <button type="button" class="btn btn-ghost btn-icon del" title="Delete user" aria-label="Delete user" (click)="remove(u)">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="users.length === 0">
+                        <td colspan="6" class="table-empty">
+                            <i class="bi bi-people" style="font-size:28px;display:block;margin-bottom:6px;"></i>
+                            No users registered yet.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<app-site-footer></app-site-footer>

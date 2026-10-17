@@ -1,0 +1,45 @@
+<app-site-header variant="admin"></app-site-header>
+
+<main class="page page-narrow">
+    <div class="page-head">
+        <span class="eyebrow"><i class="bi bi-shield-lock"></i> Administrator</span>
+        <h1 class="page-title">Training data</h1>
+    </div>
+
+    <div class="card">
+        <div class="dropzone" [class.drag]="dragging" [class.has-file]="file" role="button" tabindex="0"
+             aria-label="Choose a CSV file"
+             (click)="csvfile.click()" (keydown.enter)="csvfile.click()" (keydown.space)="csvfile.click(); $event.preventDefault()"
+             (dragover)="onDragOver($event)" (dragleave)="dragging = false" (drop)="onDrop($event)">
+            <span class="dz-icon"><i class="bi" [ngClass]="file ? 'bi-filetype-csv' : 'bi-cloud-arrow-up'"></i></span>
+
+            <ng-container *ngIf="!file">
+                <strong class="dz-title">Drag &amp; drop your CSV file here</strong>
+                <span class="dz-sub">or <span class="link">browse your computer</span></span>
+            </ng-container>
+
+            <ng-container *ngIf="file">
+                <strong class="dz-title">{{ file.name }}</strong>
+                <span class="dz-sub">{{ sizeLabel }}</span>
+                <button type="button" class="btn btn-ghost btn-sm" (click)="removeFile(csvfile, $event)"><i class="bi bi-x-lg"></i> Remove</button>
+            </ng-container>
+
+            <span class="dz-types">Supported file types: <strong>.csv</strong></span>
+        </div>
+
+        <input type="file" #csvfile id="csvfile" name="csvfile" accept=".csv,text/csv" hidden (change)="onPick(csvfile)"/>
+
+        <div class="btn-row">
+            <button type="button" id="btn_loaddata" name="btn_loaddata" class="btn btn-primary btn-lg"
+                    (click)="loadData(csvfile)" [disabled]="busy || !file">
+                <i class="bi bi-upload"></i> Load Dataset
+            </button>
+            <button type="button" id="btn_cleardata" name="btn_cleardata" class="btn btn-ghost btn-lg danger-outline"
+                    (click)="deleteData()" [disabled]="busy">
+                <i class="bi bi-trash3"></i> Clear Dataset
+            </button>
+        </div>
+    </div>
+</main>
+
+<app-site-footer></app-site-footer>

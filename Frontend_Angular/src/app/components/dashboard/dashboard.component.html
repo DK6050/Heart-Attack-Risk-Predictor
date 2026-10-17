@@ -1,0 +1,83 @@
+<app-site-header variant="user"></app-site-header>
+
+<main class="page page-wide">
+    <div class="page-head page-head-row">
+        <div>
+            <span class="eyebrow"><i class="bi bi-hand-thumbs-up"></i> Welcome back</span>
+            <h1 class="page-title">Hello, {{ firstName }}</h1>
+            <p class="page-sub">An overview of your own heart-health assessments. Only you can see this data.</p>
+        </div>
+        <a routerLink="/predict" class="btn btn-primary btn-lg"><i class="bi bi-plus-lg"></i> New assessment</a>
+    </div>
+
+    <!-- first visit -->
+    <section class="card empty-state" *ngIf="loaded && rows.length === 0">
+        <div class="empty-icon"><i class="bi bi-heart-pulse"></i></div>
+        <h2>No assessments yet</h2>
+        <p>
+            Run your first assessment to see your estimated heart attack risk. It takes about two minutes &mdash; keep
+            your latest check-up or lab report at hand for values such as blood pressure and cholesterol.
+        </p>
+        <ol class="empty-steps">
+            <li><strong>Enter</strong> your measurements</li>
+            <li><strong>Get</strong> your risk estimate and what influenced it</li>
+            <li><strong>Track</strong> how it changes over time</li>
+        </ol>
+        <a routerLink="/predict" class="btn btn-primary btn-lg">Start my first assessment <i class="bi bi-arrow-right"></i></a>
+    </section>
+
+    <ng-container *ngIf="latest as l">
+        <div class="top">
+            <section class="card latest" [ngClass]="'level-' + (l.riskPercent < 20 ? 'low' : l.riskPercent < 50 ? 'moderate' : 'high')">
+                <h2 class="card-title"><i class="bi bi-clipboard2-pulse"></i> Latest assessment</h2>
+                <p class="card-sub">{{ l.createdAt | date:'EEEE, d MMMM y, h:mm a' }}</p>
+                <app-risk-gauge [percent]="l.riskPercent"></app-risk-gauge>
+                <p class="verdict"><strong>{{ verdict }}</strong></p>
+                <a routerLink="/history" class="btn btn-ghost btn-sm">View full history <i class="bi bi-arrow-right"></i></a>
+            </section>
+
+            <div class="right">
+                <div class="stat-grid tiles">
+                    <div class="stat">
+                        <span class="stat-icon tone-blue"><i class="bi bi-journal-medical"></i></span>
+                        <span class="stat-body"><span class="stat-value">{{ rows.length }}</span><span class="stat-label">Assessments</span></span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon tone-violet"><i class="bi bi-percent"></i></span>
+                        <span class="stat-body"><span class="stat-value">{{ average | number:'1.0-1' }}%</span><span class="stat-label">Average risk</span></span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon" [ngClass]="change === null ? 'tone-blue' : change > 0 ? 'tone-red' : 'tone-green'">
+                            <i class="bi" [ngClass]="change === null ? 'bi-dash-lg' : change > 0 ? 'bi-arrow-up-right' : 'bi-arrow-down-right'"></i>
+                        </span>
+                        <span class="stat-body">
+                            <span class="stat-value" *ngIf="change !== null">{{ change > 0 ? '+' : '' }}{{ change | number:'1.0-1' }} pts</span>
+                            <span class="stat-value" *ngIf="change === null">&ndash;</span>
+                            <span class="stat-label">{{ change === null ? 'Change (needs 2 assessments)' : 'Since previous assessment' }}</span>
+                        </span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon tone-teal"><i class="bi bi-calendar-check"></i></span>
+                        <span class="stat-body"><span class="stat-value small">{{ lastCheck }}</span><span class="stat-label">Last assessment</span></span>
+                    </div>
+                </div>
+
+                <section class="card tips">
+                    <h2 class="card-title"><i class="bi bi-lightbulb"></i> Suggestions from your latest result</h2>
+                    <ul class="advice">
+                        <li *ngFor="let a of advice; trackBy: trackIndex" [ngClass]="'tone-' + a.tone"><i class="bi" [ngClass]="a.icon"></i><span>{{ a.text }}</span></li>
+                    </ul>
+                    <p class="note"><i class="bi bi-info-circle"></i> General guidance only, not medical advice. Please consult a doctor.</p>
+                </section>
+            </div>
+        </div>
+
+        <section class="card chart-card" style="margin-top:20px;">
+            <h2 class="card-title"><i class="bi bi-graph-up"></i> Your risk over time</h2>
+            <p class="card-sub">Each dot is one assessment, coloured green, amber or red by risk level.</p>
+            <div class="chart-canvas"><canvas #trend id="trend"></canvas></div>
+        </section>
+    </ng-container>
+</main>
+
+<app-site-footer></app-site-footer>

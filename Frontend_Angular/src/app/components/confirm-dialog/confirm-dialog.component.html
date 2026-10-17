@@ -1,0 +1,14 @@
+<div class="backdrop" *ngIf="confirm.request$ | async as r" (click)="confirm.answer(false)">
+  <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-message"
+       (click)="$event.stopPropagation()">
+    <div class="icon" [class.danger]="r.danger"><i class="bi" [ngClass]="r.danger ? 'bi-trash3-fill' : 'bi-question-circle-fill'"></i></div>
+    <h3 id="confirm-title">{{ r.title }}</h3>
+    <p id="confirm-message">{{ r.message }}</p>
+    <div class="actions">
+      <button type="button" class="btn btn-ghost" (click)="confirm.answer(false)">{{ r.cancelText || 'Cancel' }}</button>
+      <button type="button" #confirmButton class="btn" [ngClass]="r.danger ? 'btn-danger' : 'btn-primary'" (click)="confirm.answer(true)">
+        {{ r.confirmText || 'Confirm' }}
+      </button>
+    </div>
+  </div>
+</div>

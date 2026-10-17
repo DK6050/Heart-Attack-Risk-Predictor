@@ -1,0 +1,17 @@
+:host { display: block; }
+
+.gauge { position: relative; width: min(280px, 100%); margin: 0 auto; }
+.gauge svg { display: block; width: 100%; height: auto; overflow: visible; }
+.gauge path { fill: none; stroke-width: 15; stroke-linecap: round; }
+.gauge .track { stroke: #e2e8f0; }
+.gauge .value { stroke: var(--green-600); transition: stroke-dasharray 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+
+.read { position: absolute; left: 0; right: 0; bottom: 4px; display: flex; flex-direction: column; align-items: center; line-height: 1.05; }
+.pct { font-size: 44px; font-weight: 800; letter-spacing: -0.03em; color: var(--text); }
+.pct small { font-size: 22px; font-weight: 700; margin-left: 2px; }
+.lvl { margin-top: 2px; font-size: 13px; font-weight: 700; color: var(--green-600); }
+
+.level-moderate .value { stroke: var(--amber-600); }
+.level-moderate .lvl { color: var(--amber-600); }
+.level-high .value { stroke: var(--red-500); }
+.level-high .lvl { color: var(--red-600); }

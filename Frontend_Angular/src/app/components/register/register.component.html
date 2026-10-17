@@ -1,0 +1,90 @@
+<app-site-header variant="public"></app-site-header>
+
+<main class="auth">
+    <aside class="auth-aside">
+        <div class="auth-aside-inner">
+            <img src="assets/art/hero-heart.svg" alt="" />
+            <h2>Create your account</h2>
+            <p>Join to start predicting heart attack risk and exploring patient data.</p>
+            <ul class="auth-points">
+                <li><i class="bi bi-lightning-charge"></i> Set up in under a minute</li>
+                <li><i class="bi bi-clipboard2-pulse"></i> 13 clinical inputs, validated as you type</li>
+                <li><i class="bi bi-shield-lock"></i> Passwords are stored hashed</li>
+            </ul>
+        </div>
+    </aside>
+
+    <section class="auth-main">
+        <div class="auth-card auth-card-wide">
+            <h1>Sign up</h1>
+            <p class="sub">Fill in your details to get started.</p>
+
+            <div class="form-grid">
+                <div class="field">
+                    <label for="nm">Full name</label>
+                    <div class="input-icon">
+                        <i class="bi bi-person"></i>
+                        <input type="text" class="input" id="nm" name="nm" placeholder="Jane Doe" autocomplete="name">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="ph">Phone number</label>
+                    <div class="input-icon">
+                        <i class="bi bi-telephone"></i>
+                        <input type="tel" inputmode="numeric" maxlength="10" class="input" id="ph" name="ph" placeholder="10-digit mobile" autocomplete="tel">
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="em">Email</label>
+                <div class="input-icon">
+                    <i class="bi bi-envelope"></i>
+                    <input type="email" class="input" id="em" name="em" placeholder="you@example.com" autocomplete="email">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="gender">Gender</label>
+                <select class="input" id="gender" name="gender">
+                    <option>Select Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="addr">Address</label>
+                <textarea rows="3" class="input" id="addr" name="addr" placeholder="Street, city, postal code"></textarea>
+            </div>
+
+            <div class="field">
+                <label for="pswd">Password</label>
+                <div class="input-icon">
+                    <i class="bi bi-lock"></i>
+                    <div class="pw-wrap">
+                        <input #pw type="password" class="input" id="pswd" name="pswd" placeholder="Create a password" autocomplete="new-password">
+                        <button type="button" class="pw-toggle" (click)="pw.type = pw.type === 'password' ? 'text' : 'password'"
+                                [attr.aria-label]="pw.type === 'password' ? 'Show password' : 'Hide password'"
+                                [attr.aria-pressed]="pw.type !== 'password'" tabindex="-1">
+                            <i class="bi" [class.bi-eye]="pw.type === 'password'" [class.bi-eye-slash]="pw.type !== 'password'"></i>
+                        </button>
+                    </div>
+                </div>
+                <span class="field-hint" style="margin:6px 0 0;">At least 5 characters with an upper-case letter, a lower-case letter and a digit.</span>
+            </div>
+
+            <div class="btn-row">
+                <button type="button" class="btn btn-primary btn-lg" id="btn_savedata" name="btn_savedata" (click)="ValidateForm()" [disabled]="saving">
+                    Create account <i class="bi bi-arrow-right"></i>
+                </button>
+                <button type="button" class="btn btn-ghost btn-lg" id="btn_reset_reg" name="btn_reset_reg" (click)="clearRegform()">Clear</button>
+            </div>
+
+            <p class="auth-alt">Already registered? <a routerLink="/login">Sign in</a></p>
+        </div>
+    </section>
+</main>
+
+<app-site-footer></app-site-footer>
